@@ -15,7 +15,7 @@ env:
 
 jobs:
   iam_deployment:
-    name: "Deploy VPC"
+    name: "Destroy RDS"
     runs-on: ubuntu-latest
     defaults:
      run:
@@ -52,6 +52,9 @@ jobs:
     - name: Terraform Validate
       run: terraform validate
 
+    - name: Terraform Apply
+      run: terraform apply -var-file=terraform.tfvars -auto-approve
+
     - name: Terraform Destroy
       id: destroy
-      run: terraform apply -var-file=terraform.tfvars -destroy -auto-approve -no-color -input=false
+      run: terraform destroy -var-file=terraform.tfvars -auto-approve -no-color -input=false
