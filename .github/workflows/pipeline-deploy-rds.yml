@@ -1,4 +1,4 @@
-name: ECS with terraform infrastructure delete
+name: RDS infrastructure deployment
 
 # on:
 #   push:
@@ -20,7 +20,7 @@ jobs:
     defaults:
      run:
        shell: bash
-       working-directory: ./terraform_ecs/vpc
+       working-directory: ./terraform_ecs
     
     steps:
     - name: Checkout the repository to the runner
@@ -52,6 +52,25 @@ jobs:
     - name: Terraform Validate
       run: terraform validate
 
-    - name: Terraform Destroy
-      id: destroy
-      run: terraform apply -var-file=terraform.tfvars -destroy -auto-approve -no-color -input=false
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -var-file=terraform.tfvars -input=false -out=tf-plan
+      continue-on-error: true
+
+    - name: Check for Changes in Terraform Plan
+      id: plan_changes
+      run: echo "::set-output name=changed::$(terraform show -json tf-plan | jq '.resource_changes | length > 0')"
+
+    - name: Terraform Apply
+      run: terraform apply -var-file=terraform.tfvars -auto-approve
+
+    - name: Store Outputs
+      id: terraform_outputs
+      run: echo "::set-output name=outputs::$(terraform output -json)"
+
+    - name: Terraform Plan Status
+      if: steps.plan.outcome == 'failure'
+      run: exit 1
+
+    - name: Clean up
+      run: rm -f tf-plan
