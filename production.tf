@@ -16,7 +16,7 @@ module "rds" {
   database_name     = var.production_database_name
   database_username = var.production_database_username
   database_password = var.production_database_password
-  subnet_ids        = ["subnet-0e802add561560eb9", "subnet-05baa8661c8531eee"]
-  vpc_id            = "vpc-0b59352822e8ca1eb"
+  subnet_ids        = ["subnet-054f3041d61eb3975", "subnet-03da4468b1b6b1571"]
+  vpc_id            = "vpc-0a2cba44022ac9eaa"
   instance_class    = "db.t3.micro"
 }
