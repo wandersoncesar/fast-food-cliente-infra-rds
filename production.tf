@@ -2,7 +2,7 @@
 Variables used across all modules
 ======*/
 locals {
-  environment = "fast-food"
+  environment = "fast-food-cliente"
 }
 
 provider "aws" {
